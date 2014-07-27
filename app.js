@@ -4,9 +4,8 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-// var users = require('./routes/users');
+var mongoose = require('mongoose');
+var fs = require('fs');
 
 var app = express();
 
@@ -21,6 +20,14 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// load all models files in models dir
+fs.readdirSync(__dirname + '/models').forEach(function(filename){
+    if(~filename.indexOf('.js'))
+        require(__dirname + '/models/' + filename);
+});
+
+
+var routes = require('./routes/index');
 app.use('/api/', routes);
 
 /// catch 404 and forward to error handler
@@ -35,6 +42,10 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
+
+    // connect to db
+    mongoose.connect('mongodb://localhost/white-spaces');
+
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
