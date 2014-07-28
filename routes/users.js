@@ -1,9 +1,17 @@
-var express = require('express');
-var router = express.Router();
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
 
-/* GET users listing. */
-router.get('/', function(req, res) {
-  res.send('respond with a resource');
-});
+exports.create = function(req, res){
 
-module.exports = router;
+	var user = User();
+	user.email = req.body.email;
+	user.password = req.body.password;
+
+	user.save(function(err, user){
+		if (err)
+			res.send(err);
+
+		res.json({ message : 'User created!' });
+	});
+
+};
