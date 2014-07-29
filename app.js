@@ -26,6 +26,13 @@ fs.readdirSync(__dirname + '/models').forEach(function(filename){
         require(__dirname + '/models/' + filename);
 });
 
+// app.get('/',function(req, res){
+//     res.render('index', { title: 'Express' });
+// });
+
+app.get('/', function (req,res){
+  res.sendfile(__dirname + '/index.html');
+});
 
 var routes = require('./routes/index');
 app.use('/api/', routes);
